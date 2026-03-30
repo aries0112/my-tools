@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日期格式轉換</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    background: #f2f2f7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1c1c1e;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+  }
+  label {
+    font-size: 13px;
+    color: #6c6c70;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+  }
+  textarea {
+    width: 100%;
+    border: 1.5px solid #e0e0e5;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 16px;
+    color: #1c1c1e;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  textarea:focus { border-color: #007aff; }
+  button {
+    width: 100%;
+    background: #007aff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.15s;
+  }
+  button:active { background: #0062cc; }
+  .result-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f2f2f7;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 8px;
+    min-height: 46px;
+  }
+  .result-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1c1c1e;
+    letter-spacing: 0.5px;
+    word-break: break-all;
+  }
+  .copy-btn {
+    background: #007aff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: auto;
+    margin-top: 0;
+  }
+  .copy-btn:active { background: #0062cc; }
+  .error { color: #ff3b30; font-size: 14px; margin-top: 8px; }
+  .hint {
+    font-size: 12px;
+    color: #8e8e93;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<h1>📅 日期格式轉換</h1>
+
+<div class="card">
+  <label>貼上 iPhone 照片的日期文字</label>
+  <textarea id="input" rows="3" placeholder="例如：2026年2月21日 星期六 03:55"></textarea>
+  <p class="hint">直接從照片 App 複製貼上即可</p>
+  <button onclick="convert()">轉換</button>
+</div>
+
+<div class="card">
+  <label>轉換結果</label>
+  <div class="result-box">
+    <span class="result-text" id="output">—</span>
+    <button class="copy-btn" id="copyBtn" onclick="copyResult()" style="display:none">複製</button>
+  </div>
+  <p class="error" id="error"></p>
+</div>
+
+<script>
+function convert() {
+  const input = document.getElementById('input').value.trim();
+  const error = document.getElementById('error');
+  const output = document.getElementById('output');
+  const copyBtn = document.getElementById('copyBtn');
+  error.textContent = '';
+  copyBtn.style.display = 'none';
+
+  const match = input.match(/(\d{4})年(\d{1,2})月(\d{1,2})日.*?(\d{1,2}):(\d{2})/);
+  if (!match) {
+    error.textContent = '無法辨識格式，請確認輸入內容是否正確';
+    output.textContent = '—';
+    return;
+  }
+
+  const year = match[1];
+  const month = String(match[2]).padStart(2, '0');
+  const day = String(match[3]).padStart(2, '0');
+  const hour = String(match[4]).padStart(2, '0');
+  const minute = match[5];
+
+  const result = `${year}-${month}-${day} ${hour}${minute}`;
+  output.textContent = result;
+  copyBtn.style.display = 'inline-block';
+}
+
+function copyResult() {
+  const text = document.getElementById('output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '已複製！';
+    setTimeout(() => btn.textContent = '複製', 1500);
+  });
+}
+</script>
+
+</body>
+</html>
