@@ -3,25 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>日期時間轉換工具 v2.2</title>
+<title>日期時間轉換工具 - 玥視界</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     background: #f2f2f7;
-    padding: 30px 20px;
-    display: flex;
-    justify-content: center;
+    padding: 20px;
+    color: #1c1c1e;
+    line-height: 1.5;
   }
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+  }
+  header { text-align: center; margin-bottom: 24px; }
+  h1 { font-size: 24px; color: #007aff; margin-bottom: 8px; }
+  .intro { font-size: 14px; color: #8e8e93; }
+  
   .card {
     background: white;
     border-radius: 20px;
     padding: 24px;
-    width: 100%;
-    max-width: 450px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-bottom: 20px;
   }
-  h2 { font-size: 18px; margin-bottom: 16px; color: #007aff; text-align: center; }
+  h2 { font-size: 17px; margin-bottom: 12px; font-weight: 600; }
   textarea {
     width: 100%;
     border: 1.5px solid #e5e5ea;
@@ -31,65 +39,116 @@
     margin-bottom: 12px;
     resize: none;
     outline: none;
+    background: #fafafa;
   }
-  textarea:focus { border-color: #007aff; }
-  button {
+  textarea:focus { border-color: #007aff; background: #fff; }
+  
+  .primary-btn {
     width: 100%;
     background: #007aff;
     color: white;
     border: none;
     border-radius: 12px;
     padding: 14px;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s;
   }
-  .result-box {
-    margin-top: 20px;
+  .primary-btn:active { background: #0056b3; }
+
+  .result-section { margin-top: 24px; }
+  .result-display {
     background: #f2f2f7;
     border-radius: 12px;
-    padding: 15px;
+    padding: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    min-height: 60px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center;
+    border: 1px dashed #d1d1d6;
   }
-  #output { font-size: 20px; font-weight: 700; color: #1c1c1e; letter-spacing: 0.5px; }
   .copy-btn {
+    width: 100%;
     background: #34c759;
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 14px;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 16px;
     font-weight: 600;
+    margin-top: 12px;
+    cursor: pointer;
+    display: none;
+  }
+
+  .instructions { font-size: 14px; color: #3a3a3c; }
+  .instructions h3 { font-size: 15px; margin-bottom: 8px; color: #1c1c1e; }
+  .instructions ul { list-style: none; margin-bottom: 15px; }
+  .instructions li { margin-bottom: 6px; padding-left: 18px; position: relative; }
+  .instructions li::before { content: "•"; position: absolute; left: 0; color: #007aff; }
+  .tip { font-size: 13px; color: #8e8e93; font-style: italic; }
+
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: #aeaeb2;
+    margin-top: 30px;
+    letter-spacing: 1px;
   }
 </style>
 </head>
 <body>
 
-<div class="card">
-  <h2>日期時間快速轉換</h2>
-  <textarea id="userInput" rows="3" placeholder="貼上 iPhone 相片或 Gmail 日期..."></textarea>
-  <button onclick="convert()">轉換格式</button>
-  
-  <div class="result-box">
-    <span id="output">—</span>
-    <button class="copy-btn" id="copyBtn" style="display:none" onclick="copyResult()">複製</button>
+<div class="container">
+  <header>
+    <h1>📅 日期時間轉換工具</h1>
+    <p class="intro">支援 iPhone 相片與 Gmail 郵件格式轉換</p>
+  </header>
+
+  <div class="card">
+    <h2>輸入日期時間</h2>
+    <textarea id="userInput" rows="3" placeholder="例如：2026年3月28日 星期六 20:06 或 2014年1月9日 凌晨12:53"></textarea>
+    <button class="primary-btn" onclick="convert()">轉換格式</button>
+
+    <div class="result-section">
+      <div class="result-display" id="output">等待輸入...</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyResult()">複製結果</button>
+    </div>
   </div>
-  
-  <div style="margin-top: 15px; font-size: 12px; color: #8e8e93; line-height: 1.6;">
-    • 自動辨識：凌晨、早上、上午、下午、晚上<br>
-    • 符合 TeraBox 命名規則 (YYYY-MM-DD HHmm)
+
+  <div class="card instructions">
+    <h3>📖 使用說明</h3>
+    <ul>
+      <li><strong>iPhone 相片：</strong>直接從相片 App 複製日期文字貼上，支援帶有「星期」的格式。</li>
+      <li><strong>Gmail 郵件：</strong>支援自動辨識「凌晨、早上、上午、下午、晚上」。</li>
+      <li><strong>輸出標準：</strong>符合 TeraBox 自動命名規則 (YYYY-MM-DD HHmm)。</li>
+    </ul>
+    <p class="tip">提示：輸入後按 Enter 鍵可快速轉換，點擊複製按鈕可直接存入剪貼簿。</p>
   </div>
+
+  <footer>
+    吉米製作 &nbsp; | &nbsp; 玥視界 🄫 2026
+  </footer>
 </div>
 
 <script>
+// 支援 Enter 鍵轉換
+document.getElementById('userInput').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        convert();
+    }
+});
+
 function convert() {
   const input = document.getElementById('userInput').value.trim();
   const output = document.getElementById('output');
   const copyBtn = document.getElementById('copyBtn');
 
-  // Regex 修正：廣泛捕捉所有中文字詞
   const regex = /(\d{4})年(\d{1,2})月(\d{1,2})日\s*.*?(凌晨|早上|上午|下午|晚上)?\s*(\d{1,2}):(\d{2})/;
   const match = input.match(regex);
 
@@ -101,19 +160,19 @@ function convert() {
     let h = parseInt(match[5]);
     const min = match[6];
 
-    // 24小時制邏輯
     if (period === '下午' || period === '晚上') {
-      if (h < 12) h += 12; // 下午 1:00 -> 13:00
+      if (h < 12) h += 12;
     } else {
-      // 凌晨、早上、上午 狀況
-      if (h === 12) h = 0; // 凌晨 12:00 -> 00:00
+      if (h === 12) h = 0; 
     }
 
     const result = `${y}-${m}-${d} ${String(h).padStart(2, '0')}${min}`;
     output.textContent = result;
+    output.style.color = "#1c1c1e";
     copyBtn.style.display = 'block';
   } else {
-    output.textContent = '辨識失敗';
+    output.textContent = '格式辨識失敗，請檢查輸入內容';
+    output.style.color = "#ff3b30";
     copyBtn.style.display = 'none';
   }
 }
@@ -122,12 +181,13 @@ function copyResult() {
   const text = document.getElementById('output').textContent;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copyBtn');
-    btn.textContent = '已複製';
+    const originalText = btn.textContent;
+    btn.textContent = '✅ 已複製到剪貼簿';
     btn.style.background = '#1c1c1e';
     setTimeout(() => { 
-      btn.textContent = '複製'; 
+      btn.textContent = originalText; 
       btn.style.background = '#34c759';
-    }, 1000);
+    }, 1500);
   });
 }
 </script>
